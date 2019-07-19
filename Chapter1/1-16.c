@@ -20,7 +20,7 @@ int main(void)
 		printf("%s", longest);
 	return 0;
 }
-/* getline: read a line into s, return length */
+/* getlinea: read a line into s, return length */
 int getlinea(char s[],int lim)
 {
 	int c, i;

@@ -10,21 +10,24 @@ int main(void)
 	char line[MAXLINE]; /* current input line */
 	char longest[MAXLINE]; /* longest line saved here */
 	max = 0;
-	while ((len = getlinea(line, MAXLINE)) > 0);
+	int c;
+	while ((len = getlinea(line, MAXLINE)) > 0){
+		if (len == (MAXLINE - 1) && line[MAXLINE-2] != '\n' && line[MAXLINE-2] != EOF){
+			printf("%s", line);
+			while((c = getchar()) != EOF && c != '\n'){
+				putchar(c);
+			}
+			putchar(c);	
+		}
+	}
 	return 0;
 }
-/* getline: read a line into s, return length */
+/* getlinea: read a line into s, return length */
 int getlinea(char s[],int lim)
 {
 	int c, i;
 	for (i=0; i < lim-1 && (c=getchar())!=EOF && c!='\n'; ++i)
 		s[i] = c;
-	if (i = lim - 1){
-		while((c = getchar()) != EOF && c != '\n'){
-			i++;
-			
-		}
-	}
 	if (c == '\n') {
 		s[i] = c;
 		++i;
