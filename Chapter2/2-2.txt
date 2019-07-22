@@ -1,0 +1,16 @@
+The for loop can be rewritten using successive if statements using the fact that && and || only execute until the result of the statement is determined.
+
+Therefore, the statement can be rewritten using: 
+
+int i, boolean;
+boolean = 1;
+int c;
+for(i = 0; boolean; ++i){
+	if (i < lim - 1){
+		if ((c = getchar() != '/n'){
+			if (c == EOF) boolean = 0;
+		}
+		else boolean = 0;		
+	}
+	else boolean = 0;
+}
