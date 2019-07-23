@@ -4,7 +4,7 @@ int any(char s1[], char s2[]);
 
 int main(void){
 	char s1[] = "hello meow meow princess";
-     	char s2[] = {'a', 'e', 'm', '\0'};
+     	char s2[] = {'a', 'e', 'm', 'o', '\0'};
 	printf("%d\n", any(s1, s2));
 	return 0;
 }
