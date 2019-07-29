@@ -19,6 +19,7 @@ int main(void){
 
 void itoa(int n, char s[], int b) {
 	int i, sign;
+	sign = n;
 	i = 0;
 	do { /* generate digits in reverse order */
 		s[i++] = n % b;  /* get next digit */
@@ -32,7 +33,7 @@ void itoa(int n, char s[], int b) {
 		}
 		n /= b;
 	} while (abs(n) > 0); /* delete it */
-	if (n < 0)
+	if (sign < 0)
 		s[i++] = '-';
 	s[i] = '\0';
 	reverse(s);
