@@ -25,10 +25,9 @@ int main(void){
 	s1 = "a-z0-9";
 	expand(s1, s2);
 	printf("%s\n", s2);	
-
-
-
-
+	s1 = "-a-z-";
+	expand(s1, s2);
+	printf("%s\n", s2);
 }
 
 void expand(char s1 [], char s2 []){
@@ -38,7 +37,7 @@ void expand(char s1 [], char s2 []){
 		if (s1[i] != '-') {
 			s2[j++] = s1[i];
 		}
-		else if (s1[i-1] < s1[i+1]){
+		else if (i-1 > 0 && i+1 < 10000 && s1[i-1] < s1[i+1]){
 			for (int k = s1[i-1] + 1; k <= s1[i+1]; k++){
 		      		s2[j++] = k;	
 			}	
