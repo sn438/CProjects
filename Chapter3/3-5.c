@@ -5,25 +5,32 @@
 #include <string.h>
 #include <stdlib.h>
 
-void itoa(int n, char s[]);
+void itoa(int n, char s[], int b);
 void reverse(char * str);
 int main(void){
 	char s1[10000] = {0};
-	itoa(-2147483648, s1);
+	itoa(-2147483648, s1, 2);
 	printf("%s\n", s1);
-	itoa(2147483647, s1);
+	itoa(2147483647, s1, 16);
+	printf("%s\n", s1);
+	itoa(15, s1, 3);
 	printf("%s\n", s1);
 }
 
-void itoa(int n, char s[]) {
+void itoa(int n, char s[], int b) {
 	int i, sign;
 	i = 0;
 	do { /* generate digits in reverse order */
-		s[i++] = n % 10;  /* get next digit */
+		s[i++] = n % b;  /* get next digit */
 		if(n < 0) 
 			s[i-1] *= -1;
-		s[i-1] += '0';
-		n /= 10;
+		if (s[i-1] < 10)
+			s[i-1] += '0';
+		else{
+			s[i-1] -= 10;
+			s[i-1] += 'a';
+		}
+		n /= b;
 	} while (abs(n) > 0); /* delete it */
 	if (n < 0)
 		s[i++] = '-';
@@ -44,5 +51,5 @@ void reverse(char *str)
             str[j] = ch;
             i--;
             j++;
-       }  
+       }
 }
