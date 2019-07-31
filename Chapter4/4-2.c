@@ -7,9 +7,9 @@ double atoff(char s[]);
 
 int main(void){
 	double atoff(char []);
-	printf("%10f\n", atoff("123.45e-6"));
-	printf("%10f\n", atoff("123.45"));
-	printf("%10f\n", atoff("1.23e-3"));
+	printf("%10.10f\n", atoff("123.45e-6"));
+	printf("%10.10f\n", atoff("123.45"));
+	printf("%10.10f\n", atoff("1.23e-3"));
 }
 
 /* atoff: convert string s to double */
