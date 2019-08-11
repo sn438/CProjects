@@ -121,7 +121,7 @@ void clearstack(void){
 /* getop: get next character or numeric operand */
 int getop(char s[])
 {
-	int i, c, temp;
+	int i, c;
 	while ((s[0] = c = getch()) == ' ' || c == '\t')
 		;
 	s[1] = '\0';

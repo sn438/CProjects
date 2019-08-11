@@ -10,6 +10,7 @@
 #define EXP '#'
 #define LETTER '^'
 #define VARIABLE '('
+#define ANS ')'
 #define MAXVAL 100 /* maximum depth of val stack */
 #define BUFSIZE 100
 
@@ -32,9 +33,24 @@ int main(void)
 	double op2;
 	char s[MAXOP];
 	while ((type = getop(s)) != EOF) {
-		switch (type) {
+		switch (type) {	
 			case NUMBER:
 				push(atof(s));
+				break;
+			case LETTER:
+				if(s[0] >= 'A' && s[0] <= 'Z')
+					push(variablelist[s[0] - 'A']);
+				else
+					printf("error: variable not found\n");
+				break;
+			case VARIABLE:
+				if(s[0] >= 'A' && s[0] <= 'Z')
+					variablelist[s[0] - 'A'] = pop();
+				else
+					printf("error: variable not found\n");
+				break;
+			case ANS:
+				push(variablelist[27]);
 				break;
 			case '+':
 				push(pop() + pop());
@@ -134,14 +150,24 @@ int getop(char s[])
 		;
 	s[1] = '\0';
 	
-	if ((c >= 'A' && c <= 'Z') && ((temp = getch()) == ' ')){
-		return LETTER;
-	}	
-	ungetch(temp);
-
-	if (c == '='){
-		return VARIABLE;
+	// variable
+	if (c >= 'A' && c <= 'Z'){	
+		if ((temp = getch()) == ' '){	
+			while((temp = getch()) == ' ' || temp == '\t')
+				;
+			if (temp == '='){
+				while((c = getch()) != '\n'); // need to do this because otherwise the \n command while cause the program to try to print the stack	
+				return VARIABLE;
+			}
+			else {
+				ungetch(temp);
+				return LETTER;
+			}
+		} else {
+			ungetch(temp);
+		}
 	}
+	
 	// SIN
 	if (c == 's'){
 		if ((c = getch()) == 'i'){
@@ -194,7 +220,26 @@ int getop(char s[])
 			c = 'e';
 		}
 	}
-	
+
+	//ANS
+	if (c == 'A'){
+		if ((c = getch()) == 'N'){
+			if((c = getch()) == 'S'){
+				return ANS;
+			}
+			else {
+				ungetch(c);
+				ungetch('N');
+				c = 'A';
+			}	
+		}
+		else {
+			ungetch(c);
+			c = 'A';
+		}
+	}
+
+	//negative number
 	if (c == '-' && isdigit(c = getch())){
 		ungetch(c);
 		s[0] = '-';
