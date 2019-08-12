@@ -269,7 +269,10 @@ int getop(char s[])
 		ungetch(c);
 	return NUMBER;
 }
-
+/*
+ * There is no need to modify anything with the code from the textbook because char is capable of holding negative values like -1 in this system.
+ * If the system has different ranges for char such that it won't hold negative values, simply change the buffer to tyoe int or to type unsigned char
+ */
 char buf[BUFSIZE]; /* buffer for ungetch */
 int bufp = 0; /* next free position in buf */
 int getch(void) /* get a (possibly pushed-back) character */
