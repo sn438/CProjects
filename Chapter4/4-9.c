@@ -23,7 +23,6 @@ void printpop(void);
 void duplicatetop(void);
 void swaptop(void);
 void clearstack(void);
-void unget(char []);
 
 int variablelist[27]; //holds all variable values
 int lastletter = -1;
@@ -150,7 +149,7 @@ int getop(char s[])
 	while ((s[0] = c = getch()) == ' ' || c == '\t')
 		;
 	s[1] = '\0';
-
+	
 	// variable
 	if (c >= 'A' && c <= 'Z'){	
 		if ((temp = getch()) == ' '){	
@@ -168,7 +167,7 @@ int getop(char s[])
 			ungetch(temp);
 		}
 	}
-
+	
 	// SIN
 	if (c == 's'){
 		if ((c = getch()) == 'i'){
@@ -203,7 +202,7 @@ int getop(char s[])
 			c = 'p';
 		}
 	}
-
+	
 	//EX
 	if (c == 'e'){
 		if ((c = getch()) == 'x'){
@@ -271,28 +270,16 @@ int getop(char s[])
 	return NUMBER;
 }
 
-char buffer = 0; /* buffer for ungetch */
+char buf[BUFSIZE]; /* buffer for ungetch */
 int bufp = 0; /* next free position in buf */
 int getch(void) /* get a (possibly pushed-back) character */
 {
-	if (buffer >  0) {
-    		int temp = buffer;
-    		buffer = 0;
-		return temp;
-  	} else {
-    		return  getchar();
-  	}
+	return (bufp > 0) ? buf[--bufp] : getchar();
 }
 void ungetch(int c) /* push character back on input */
 {
-	buffer = (char) c;
-}
-
-void unget(char s[]){
-	int i = 0;
-	while(bufp < BUFSIZE && s[i] != '\0'){
-		ungetch(s[i++]);
-	}
-	if (bufp < BUFSIZE)
-		ungetch('\0');
+	if (bufp >= BUFSIZE)
+		printf("ungetch: too many characters\n");
+	else
+		buf[bufp++] = c;
 }

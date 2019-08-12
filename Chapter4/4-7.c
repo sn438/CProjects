@@ -23,11 +23,16 @@ void printpop(void);
 void duplicatetop(void);
 void swaptop(void);
 void clearstack(void);
-void unget(char []);
+void ungets(char []);
 
 int variablelist[27]; //holds all variable values
 int lastletter = -1;
 /* reverse Polish calculator */
+
+/* 
+ * It is better to have ungets(char []) rely on ungetch because it is better to isolate the access to the buffer with just one function. This way, if we change the characteristics of the buffer, we only have to modify one function as opposed to two.
+*/
+
 int main(void)
 {
 	int type;
@@ -285,7 +290,7 @@ void ungetch(int c) /* push character back on input */
 		buf[bufp++] = c;
 }
 
-void unget(char s[]){
+void ungets(char s[]){
 	int i = 0;
 	while(bufp < BUFSIZE && s[i] != '\0'){
 		ungetch(s[i++]);
