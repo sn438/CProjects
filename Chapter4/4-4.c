@@ -111,6 +111,7 @@ int getop(char s[])
 	while ((s[0] = c = getch()) == ' ' || c == '\t')
 		;
 	s[1] = '\0';
+	//negative number
 	if (c == '-'){
 		if (isdigit(c = getch())){
 			ungetch(c);

@@ -177,21 +177,27 @@ int getop(char s[])
 			c = 'e';
 		}
 	}
-	
-	if (c == '-' && isdigit(c = getch())){
-		ungetch(c);
-		s[0] = '-';
-		i = 0;
-		if (isdigit(c)) /* collect integer part */
-			while (isdigit(s[++i] = c = getch()))
-				;
-		if (c == '.') /* collect fraction part */
-			while (isdigit(s[++i] = c = getch()))
-				;
-		s[i] = '\0';
-		if (c != EOF)
+	//negative number
+	if (c == '-'){
+		if (isdigit(c = getch())){
 			ungetch(c);
-		return NUMBER;
+			s[0] = '-';
+			i = 0;
+			if (isdigit(c)) /* collect integer part */
+				while (isdigit(s[++i] = c = getch()))
+					;
+			if (c == '.') /* collect fraction part */
+				while (isdigit(s[++i] = c = getch()))
+					;
+			s[i] = '\0';
+			if (c != EOF)
+				ungetch(c);
+			return NUMBER;
+		}
+		else{
+			ungetch(c);
+			c = '-';
+		}
 	}
 	if (!isdigit(c) && c != '.')
 		return c; /* not a number */
