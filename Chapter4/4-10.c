@@ -19,7 +19,7 @@ int getop(char []);
 void push(double);
 double pop(void);
 int getch(void);
-void ungetch(int);
+void ungetch();
 void printpop(void);
 void duplicatetop(void);
 void swaptop(void);
@@ -36,11 +36,10 @@ int main(void)
 	int type;
 	double op2;
 	char s[MAXOP];
-
-	while (getlines(line, MAXLINELENGTH) != -1) {
-		printf("%s\n", line);
-		/*
-		while ((type = getop(s)) != EOF) {
+	int linelength; // holds the index of null character in null terminated string
+	while ((linelength = getlines(line, MAXLINELENGTH)) > 0) {
+		while (lineindex < linelength) {
+			type = getop(s);
 			switch (type) {	
 				case NUMBER:
 					push(atof(s));
@@ -104,7 +103,6 @@ int main(void)
 					break;
 			}
 		}
-*/		
 	lineindex = 0;
 	}
 	return 0;
@@ -171,11 +169,11 @@ int getop(char s[])
 				return VARIABLE;
 			}
 			else {
-				ungetch(temp);
+				ungetch();
 				return LETTER;
 			}
 		} else {
-			ungetch(temp);
+			ungetch();
 		}
 	}
 	
@@ -186,13 +184,13 @@ int getop(char s[])
 				return SIN;
 			}
 			else {
-				ungetch(c);
-				ungetch('i');
+				ungetch();
+				ungetch();
 				c = 's';
 			}	
 		}
 		else {
-			ungetch(c);
+			ungetch();
 			c = 's';
 		}
 	}
@@ -203,13 +201,13 @@ int getop(char s[])
 				return POW;
 			}
 			else {
-				ungetch(c);
-				ungetch('o');
+				ungetch();
+				ungetch();
 				c = 'p';
 			}	
 		}
 		else {
-			ungetch(c);
+			ungetch();
 			c = 'p';
 		}
 	}
@@ -221,13 +219,13 @@ int getop(char s[])
 				return EXP;
 			}
 			else {
-				ungetch(c);
-				ungetch('x');
+				ungetch();
+				ungetch();
 				c = 'e';
 			}	
 		}
 		else {
-			ungetch(c);
+			ungetch();
 			c = 'e';
 		}
 	}
@@ -239,32 +237,38 @@ int getop(char s[])
 				return ANS;
 			}
 			else {
-				ungetch(c);
-				ungetch('N');
+				ungetch();
+				ungetch();
 				c = 'A';
 			}	
 		}
 		else {
-			ungetch(c);
+			ungetch();
 			c = 'A';
 		}
 	}
 
 	//negative number
-	if (c == '-' && isdigit(c = getch())){
-		ungetch(c);
-		s[0] = '-';
-		i = 0;
-		if (isdigit(c)) /* collect integer part */
-			while (isdigit(s[++i] = c = getch()))
-				;
-		if (c == '.') /* collect fraction part */
-			while (isdigit(s[++i] = c = getch()))
-				;
-		s[i] = '\0';
-		if (c != EOF)
-			ungetch(c);
-		return NUMBER;
+	if (c == '-'){
+		if (isdigit(c = getch())){
+			ungetch();
+			s[0] = '-';
+			i = 0;
+			if (isdigit(c)) /* collect integer part */
+				while (isdigit(s[++i] = c = getch()))
+					;
+			if (c == '.') /* collect fraction part */
+				while (isdigit(s[++i] = c = getch()))
+					;
+			s[i] = '\0';
+			if (c != EOF)
+				ungetch();
+			return NUMBER;
+		}
+		else{
+			ungetch();
+			c = '-';
+		}
 	}
 	if (!isdigit(c) && c != '.')
 		return c; /* not a number */
@@ -277,17 +281,22 @@ int getop(char s[])
 			;
 	s[i] = '\0';
 	if (c != EOF)
-		ungetch(c);
+		ungetch();
 	return NUMBER;
 }
 
 char buf[BUFSIZE]; /* buffer for ungetch */
 int bufp = 0; /* next free position in buf */
+/*
+ * getch and ungetch are still being used in the code but not to retrieve characters. These functions are simply being used to step through the string returned by getline.
+ * The advantage of reusing getch and ungetch is that there is no need to change getop anymore. 
+ *
+ */
 int getch(void) /* get a (possibly pushed-back) character */
 {
-	return line[lineindex++];
+		return line[lineindex++];
 }
-void ungetch(int c) /* push character back on input */
+void ungetch() /* push character back on input */
 {
 	if (lineindex <= 0)
 		printf("ungetch: too many characters\n");
@@ -314,7 +323,5 @@ void ungets(char s[]){
  	if (c == '\n')
  		s[i++] = c;
  	s[i] = '\0';
-	if (c == EOF) 
-		return -1;
  	return i;
  }
