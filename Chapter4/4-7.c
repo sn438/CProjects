@@ -26,7 +26,6 @@ void clearstack(void);
 void ungets(char []);
 
 int variablelist[27]; //holds all variable values
-int lastletter = -1;
 /* reverse Polish calculator */
 
 /* 

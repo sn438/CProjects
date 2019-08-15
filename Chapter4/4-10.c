@@ -13,6 +13,7 @@
 #define ANS ')'
 #define MAXVAL 100 /* maximum depth of val stack */
 #define BUFSIZE 100
+#define MAXLINELENGTH 10000
 
 int getop(char []);
 void push(double);
@@ -23,77 +24,88 @@ void printpop(void);
 void duplicatetop(void);
 void swaptop(void);
 void clearstack(void);
-
+void ungets(char []);
+int getlines(char [], int);
 int variablelist[27]; //holds all variable values
+
 /* reverse Polish calculator */
+int lineindex = 0;  
+char line[MAXLINELENGTH];
 int main(void)
 {
 	int type;
 	double op2;
 	char s[MAXOP];
-	while ((type = getop(s)) != EOF) {
-		switch (type) {	
-			case NUMBER:
-				push(atof(s));
-				break;
-			case LETTER:
-				if(s[0] >= 'A' && s[0] <= 'Z')
-					push(variablelist[s[0] - 'A']);
-				else
-					printf("error: variable not found\n");
-				break;
-			case VARIABLE:
-				if(s[0] >= 'A' && s[0] <= 'Z')
-					variablelist[s[0] - 'A'] = pop();
-				else
-					printf("error: variable not found\n");
-				break;
-			case ANS:
-				push(variablelist[27]);
-				break;
-			case '+':
-				push(pop() + pop());
-				break;
-			case '*':
-				push(pop() * pop());
-				break;
-			case '-':
-				op2 = pop();
-				push(pop() - op2);
-				break;
-			case '/':
-				op2 = pop();
-				if (op2 != 0.0)
-					push(pop() / op2);
-				else
-					printf("error: zero divisor\n");
-				break;
-			case '%':
-				op2 = pop();
-				if (op2 != 0.0)
-					push((int) pop() % (int) op2);
-				else
-					printf("error: mod 0 error\n");
-				break;
-			case SIN:
-				push(sin(pop()));
-				break;
-			case POW:
-				op2 = pop();
-				push(pow(pop(), op2));
-				break;
-			case EXP:
-				push(exp(pop()));
-				break;
-			case '\n':
-				op2 = pop(); //op2 is only being used to hold temporary value
-				printf("\t%.8g\n", op2);
-				variablelist[27] = op2;
-				break;
-			default:
-				printf("error: unknown command %s\n", s);
-				break;
+
+	while (getlines(line, MAXLINELENGTH) != -1) {
+		printf("%s\n", line);
+		/*
+		while ((type = getop(s)) != EOF) {
+			switch (type) {	
+				case NUMBER:
+					push(atof(s));
+					break;
+				case LETTER:
+					if(s[0] >= 'A' && s[0] <= 'Z')
+						push(variablelist[s[0] - 'A']);
+					else
+						printf("error: variable not found\n");
+					break;
+				case VARIABLE:
+					if(s[0] >= 'A' && s[0] <= 'Z')
+						variablelist[s[0] - 'A'] = pop();
+					else
+						printf("error: variable not found\n");
+					break;
+				case ANS:
+					push(variablelist[27]);
+					break;
+				case '+':
+					push(pop() + pop());
+					break;
+				case '*':
+					push(pop() * pop());
+					break;
+				case '-':
+					op2 = pop();
+					push(pop() - op2);
+					break;
+				case '/':
+					op2 = pop();
+					if (op2 != 0.0)
+						push(pop() / op2);
+					else
+						printf("error: zero divisor\n");
+					break;
+				case '%':
+					op2 = pop();
+					if (op2 != 0.0)
+						push((int) pop() % (int) op2);
+					else
+						printf("error: mod 0 error\n");
+					break;
+				case SIN:
+					push(sin(pop()));
+					break;
+				case POW:
+					op2 = pop();
+					push(pow(pop(), op2));
+					break;
+				case EXP:
+					push(exp(pop()));
+					break;
+				case '\n':
+					op2 = pop(); //op2 is only being used to hold temporary value
+					printf("\t%.8g\n", op2);
+					variablelist[27] = op2;
+					break;
+				default:
+					printf("error: unknown command %s\n", s);
+					break;
+			}
 		}
+*/		
+	lineindex = 0;
 	}
 	return 0;
 }
@@ -268,20 +280,41 @@ int getop(char s[])
 		ungetch(c);
 	return NUMBER;
 }
-/*
- * There is no need to modify anything with the code from the textbook because char is capable of holding negative values like -1 in this system.
- * If the system has different ranges for char such that it won't hold negative values, simply change the buffer to tyoe int or to type unsigned char
- */
+
 char buf[BUFSIZE]; /* buffer for ungetch */
 int bufp = 0; /* next free position in buf */
 int getch(void) /* get a (possibly pushed-back) character */
 {
-	return (bufp > 0) ? buf[--bufp] : getchar();
+	return line[lineindex++];
 }
 void ungetch(int c) /* push character back on input */
 {
-	if (bufp >= BUFSIZE)
+	if (lineindex <= 0)
 		printf("ungetch: too many characters\n");
 	else
-		buf[bufp++] = c;
+		lineindex--;
 }
+
+void ungets(char s[]){
+	int i = 0;
+	while(bufp < BUFSIZE && s[i] != '\0'){
+		ungetch(s[i++]);
+	}
+	if (bufp < BUFSIZE)
+		ungetch('\0');
+}
+
+/* getline: get line into s, return length */
+ int getlines(char s[], int lim)
+ {
+ 	int c, i;
+ 	i = 0;
+ 	while (--lim > 0 && (c=getchar()) != EOF && c != '\n')
+ 		s[i++] = c;
+ 	if (c == '\n')
+ 		s[i++] = c;
+ 	s[i] = '\0';
+	if (c == EOF) 
+		return -1;
+ 	return i;
+ }
