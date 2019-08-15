@@ -11,7 +11,6 @@ int getop(char []);
 void push(double);
 double pop(void);
 int getch(void);
-void ungetch(int);
 
 /* reverse Polish calculator */
 int main(void)
@@ -78,7 +77,7 @@ int getop(char s[])
 {
 	static int buffer = -1;
 	int i, c;
-	if (buffer == -1 || buffer ==  ' '){ 
+	if (buffer == -1 || buffer ==  ' ' || buffer == '\t'){ 
 		while ((s[0] = c = getch()) == ' ' || c == '\t')
 			;
 	}
@@ -110,10 +109,4 @@ int getch(void) /* get a (possibly pushed-back) character */
 {
 	return (bufp > 0) ? buf[--bufp] : getchar();
 }
-void ungetch(int c) /* push character back on input */
-{
-	if (bufp >= BUFSIZE)
-		printf("ungetch: too many characters\n");
-	else
-		buf[bufp++] = c;
-}
+
