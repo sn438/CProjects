@@ -2,10 +2,8 @@
 
 int itoa(int n, char s[], int i);
 
-int sindex = 0;
-char s[10000];
-
 int main(void){
+	char s[10000];
 	itoa(5, s, 0);
 	printf("%s\n", s);
 	itoa(-5, s, 0);
@@ -17,6 +15,7 @@ int main(void){
 	return 0;
 }
 
+/* n is the number being converted to a string, s is the array holding the string, and i is the variable used to step through the string array */
 int itoa(int n, char s[], int i)  {
 	if (n < 0) {
  		s[i++] = '-';
